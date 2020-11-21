@@ -22,15 +22,15 @@ describe('The Register Page', () => {
 
   it('Missing some required fields', () =>{
     cy.get('[name="customer\.address\.zipCode"]').focus().clear()
-    cy.get('[colspan="2"] > .button').click()
+    cy.get('input[value="Register"]').click()
     cy.contains('Zip Code is required')
 
   })
 
   it('Account registered successfully', () =>{
-    cy.get('[name="customer\.username"]').focus().clear().type('test_user_4')
+    cy.get('[name="customer\.username"]').focus().clear().type('test_user_5')
     cy.get('[colspan="2"] > .button').click()
     cy.contains('Your account was created successfully. You are now logged in')
-    cy.get('.title').should('contain','test_user_4')
+    cy.get('.title').should('contain','test_user_5')
   })
 })

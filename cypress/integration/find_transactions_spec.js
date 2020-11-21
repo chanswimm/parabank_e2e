@@ -35,12 +35,8 @@ describe('Find Transactions By Amount', () => {
         accept:"application/json"
       }
     }).then(response =>{
-      var t = []
       for(var i = 0; i < response.body.length; i++){
-        t[i]=response.body.[i].description;
-      }
-      for(var j=0; j<response.body.length; j++){
-        cy.contains(t[j])
+        cy.contains(response.body.[i].description)
       }
     })
   })
@@ -56,12 +52,8 @@ describe('Find Transactions By Amount', () => {
         accept:"application/json"
       }
     }).then(response=>{
-      var t=[]
       for(var i = 0; i < response.body.length; i++){
-        t[i]=response.body.[i].description;
-      }
-      for(var j=0; j < response.body.length; j++){
-        cy.contains(t[j])
+        cy.contains(response.body.[i].description)
       }
     })
   })
@@ -76,12 +68,8 @@ describe('Find Transactions By Amount', () => {
         accept:"application/json"
       }
     }).then(response=>{
-      var t=[]
       for(var i = 0; i < response.body.length; i++){
-        t[i]=response.body.[i].description;
-      }
-      for(var j=0; j < response.body.length; j++){
-        cy.contains(t[j])
+        cy.contains(response.body.[i].description)
       }
     })
   })

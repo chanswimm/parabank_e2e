@@ -3,8 +3,8 @@
 Test cases are located in cypress/integration folder
 
 ### Login Information
-* username: q
-* password: q
+* username: beans_test
+* password: 123
 
 ### Functionality covered:
 * User Registration

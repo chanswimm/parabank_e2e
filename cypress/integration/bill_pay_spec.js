@@ -1,8 +1,8 @@
 describe('Bill payment service', () =>{
   const payee_name = 'payee 1'
-  const from_acc = '14121'
+  const from_acc = '15231'
   beforeEach(()=>{
-    cy.login({username:'q', password:'q'})
+    cy.login()
     cy.visit('/billpay.htm')
     cy.get('[name="payee\.name"]').focus().type(payee_name)
     cy.get('[name="payee\.address.street"]').focus().type('street')

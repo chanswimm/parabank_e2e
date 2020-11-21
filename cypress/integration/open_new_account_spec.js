@@ -1,6 +1,7 @@
 describe('Open new account', () =>{
+  const customer_id = 12989
   beforeEach(()=>{
-    cy.login({username:'q', password:'q'})
+    cy.login()
     cy.visit('/openaccount.htm')
   })
 
@@ -27,6 +28,29 @@ describe('Open new account', () =>{
       const new_account = $account_id.text()
       cy.visit('/overview.htm')
       cy.contains(new_account)
+    })
+  })
+
+  it('New Balance is correct', ()=>{
+    cy.visit('/overview.htm')
+    cy.request({
+      method:'GET',
+      url:'/services/bank/customers/'+customer_id+'/accounts',
+      headers:{
+        accept:"application/json"
+      }
+    }).then(response=>{
+      var balance = 0
+      for(var i=0; i < response.body.length; i++){
+        balance+=response.body[i].balance;
+      }
+      if(balance >= 0){
+        balance = '$'+ balance
+      }
+      else{
+        balance = '-$'+ Math.abs(balance)
+      }
+      cy.contains(balance)
     })
   })
 

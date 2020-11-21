@@ -1,11 +1,8 @@
 describe('User Login', () =>{
-  const username = 'q'
-  const password = 'q'
-
   it('Login as test user', () =>{
     cy.visit('/index.htm')
-    cy.get('input[name=username]').type(username)
-    cy.get('input[name=password]').type(password)
+    cy.get('input[name=username]').type('q')
+    cy.get('input[name=password]').type('q')
     cy.get('[type="submit"]').click()
     cy.url().should('include','/overview.htm')
     cy.get('#leftPanel > ul > :nth-child(8) > a').click()

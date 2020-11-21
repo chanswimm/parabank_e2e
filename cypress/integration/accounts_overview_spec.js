@@ -1,7 +1,7 @@
 describe('Accounts Overview', () =>{
-  const customer_id = 12434
+  const customer_id = 12989
   beforeEach(()=>{
-    cy.login({username:'q', password:'q'})
+    cy.login()
     cy.visit('/overview.htm')
     cy.url().should('include','/overview.htm')
   })

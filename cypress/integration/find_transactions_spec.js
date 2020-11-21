@@ -1,12 +1,12 @@
 describe('Find Transactions By Amount', () => {
-  const account_id = '14121'
+  const account_id = '15231'
   const transaction_id = '20803'
   const date = '11-20-2020'
   const from_date = '11-18-2020'
   const to_date = '11-21-2020'
   const amount = '100'
   beforeEach(() =>{
-    cy.login({username:'q', password:'q'})
+    cy.login()
     cy.visit('/findtrans.htm')
     cy.get('#accountId').select(account_id)
   })

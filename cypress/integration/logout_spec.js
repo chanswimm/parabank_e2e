@@ -1,6 +1,6 @@
 describe('Logout', () =>{
   beforeEach(()=>{
-    cy.login({username:'q', password:'q'})
+    cy.login()
   })
   it('Logout from any page', () =>{
     cy.get('#leftPanel > ul > :nth-child(8) > a').click()

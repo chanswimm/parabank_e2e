@@ -1,8 +1,8 @@
 describe('Transfer Funds', () =>{
-  const to_acc = '15009'
-  const from_acc = '13566'
+  const to_acc = '15231'
+  const from_acc = '15564'
   beforeEach(()=>{
-    cy.login({username:'q', password:'q'})
+    cy.login()
     cy.visit('/transfer.htm')
   })
 

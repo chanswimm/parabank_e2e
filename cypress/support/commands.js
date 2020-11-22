@@ -1,5 +1,5 @@
-var username='beans_test'
-var password='123'
+var username='a'
+var password='a'
 
 Cypress.Commands.add('login', () =>{
   cy.visit('/index.htm')
@@ -17,5 +17,56 @@ Cypress.Commands.add('getCustomerId', ()=>{
     }
   }).then(response=>{
     return(response.body.id)
+  })
+})
+
+Cypress.Commands.add('getTwoAccounts', ()=>{
+  cy.getCustomerId().then((customer_id)=>{
+    cy.request({
+      method:'GET',
+      url:'/services/bank/customers/'+customer_id+'/accounts',
+      headers:{
+        accept:"application/json"
+      }
+    }).then(response=>{
+      var accounts=[]
+      if(response.body.length == 1){
+        accounts[0]=response.body.[0].id
+        accounts[1]=response.body.[0].id
+      }
+      else{
+        accounts[0]=response.body.[0].id
+        accounts[1]=response.body.[1].id
+      }
+      return(accounts)
+    })
+  })
+})
+
+Cypress.Commands.add('getSingleAccount',()=>{
+  cy.getCustomerId().then((customer_id)=>{
+    cy.request({
+      method:'GET',
+      url:'/services/bank/customers/'+customer_id+'/accounts',
+      headers:{
+        accept:"application/json"
+      }
+    }).then(response=>{
+      return(response.body.[0].id)
+    })
+  })
+})
+
+Cypress.Commands.add('getTransactionId',()=>{
+  cy.getSingleAccount().then((account_id)=>{
+    cy.request({
+      method:'GET',
+      url:'/services/bank/accounts/'+account_id+'/transactions',
+      headers:{
+        accept:"application/json"
+      }
+    }).then(response=>{
+      return(response.body[0].id)
+    })
   })
 })

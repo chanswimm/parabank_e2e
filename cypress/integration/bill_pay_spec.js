@@ -62,4 +62,26 @@ describe('Bill payment service', () =>{
       })
     })
   })
+
+  // This should fail since account balance < transfer amount
+  it('Payment from account with insufficient funds', () =>{
+    const big_amount = 1000
+    cy.get('[name="amount"]').focus().clear().type(big_amount)
+    cy.getBalance(from_acc).then((prev_balance)=>{
+      if(prev_balance < big_amount){
+        cy.log('Account does not have sufficient funds - this should fail')
+      }
+      cy.get('input[type="submit"]').click()
+      cy.contains('Bill Payment Complete')
+
+      cy.getTransactions(from_acc).then((body)=>{
+        expect(body.[body.length-1].description).to.eq('Bill Payment to ' + payee_name)
+      })
+
+      var new_balance = prev_balance-big_amount
+      cy.getBalance(from_acc).then((balance)=>{
+        expect(balance).to.eq(new_balance)
+      })
+    })
+  })
 })

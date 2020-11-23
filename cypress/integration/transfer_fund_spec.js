@@ -68,4 +68,27 @@ describe('Transfer Funds', () =>{
       expect(body.[body.length-1].description).to.eq('Funds Transfer Sent')
     })
   })
+
+  //This should fail since from_acc has balance < transfer amount
+  it('Transfer Funds from Account that does not have sufficient funds', () =>{
+    const big_amount = 4000
+    cy.get('#amount').type(big_amount)
+    cy.get('#fromAccountId').select(from_acc)
+    cy.get('#toAccountId').select(to_acc)
+    cy.getBalance(from_acc).then((from_acc_prev_balance)=>{
+      if(from_acc_prev_balance < big_amount){
+        cy.log('Account does not have sufficient funds - this should fail')
+      }
+      cy.getBalance(to_acc).then((to_acc_prev_balance)=>{
+        cy.get('[type="submit"]').click()
+        cy.contains('Transfer Complete!')
+        cy.getBalance(from_acc).then((from_acc_new_balance)=>{
+          expect(from_acc_new_balance).to.eq(from_acc_prev_balance - big_amount)
+        })
+        cy.getBalance(to_acc).then((to_acc_new_balance)=>{
+          expect(to_acc_new_balance).to.eq(to_acc_prev_balance + big_amount)
+        })
+      })
+    })
+  })
 })

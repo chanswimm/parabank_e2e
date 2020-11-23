@@ -17,9 +17,13 @@ describe('Open new account', () =>{
         cy.get('#fromAccountId').select(JSON.stringify(from_acc))
         cy.get('input[type=submit]').click()
         cy.contains('Congratulations, your account is now open.')
-
         cy.get('#newAccountId').then(($account_id)=>{
           const new_account = $account_id.text()
+          cy.getAccountInfo(new_account).then((body)=>{
+            expect(body.type).to.eq('CHECKING')
+            expect(body.balance).to.eq(100)
+            expect(body.customerId).to.eq(customer_id)
+          })
           cy.visit('/overview.htm')
           cy.contains(new_account)
         })
@@ -36,6 +40,11 @@ describe('Open new account', () =>{
 
       cy.get('#newAccountId').then(($account_id)=>{
         const new_account = $account_id.text()
+        cy.getAccountInfo(new_account).then((body)=>{
+          expect(body.type).to.eq('SAVINGS')
+          expect(body.balance).to.eq(100)
+          expect(body.customerId).to.eq(customer_id)
+        })
         cy.visit('/overview.htm')
         cy.contains(new_account)
       })

@@ -1,6 +1,7 @@
 describe('Transfer Funds', () =>{
   let from_acc
   let to_acc
+  const amount = 8
   beforeEach(()=>{
     cy.login()
     cy.visit('/transfer.htm')
@@ -13,6 +14,17 @@ describe('Transfer Funds', () =>{
   it('Error for Missing Transfer amount', () =>{
     cy.get('[type="submit"]').click()
     cy.contains('The amount cannot be empty.')
+    const a=''
+    cy.request({
+      method:'POST',
+      url:'/services/bank/transfer?fromAccountId='+from_acc+'&toAccountId='+to_acc+'&amount'+a,
+      failOnStatusCode:false,
+      headers:{
+        accept:"application/json"
+      }
+    }).then((response)=>{
+      expect(response.status).to.eq(500)
+    })
   })
 
   it('Error for Invalid type for amount', () =>{
@@ -27,17 +39,35 @@ describe('Transfer Funds', () =>{
       headers:{
         accept:"application/json"
       }
+    }).then((response)=>{
+      expect(response.status).to.eq(404)
     })
   })
 
   it('Transfer Funds from accountA to accountB', ()=>{
-    cy.get('#amount').type('100')
+    cy.get('#amount').type(amount)
     cy.get('#fromAccountId').select(from_acc)
     cy.get('#toAccountId').select(to_acc)
-    cy.get('[type="submit"]').click()
-
-    cy.contains('Transfer Complete!')
-    cy.request('GET','/services/bank/accounts/' + to_acc +'/transactions').its('body').should('include','Funds Transfer Received')
-    cy.request('GET','/services/bank/accounts/' + from_acc +'/transactions').its('body').should('include','Funds Transfer Sent')
+    cy.getBalance(from_acc).then((from_acc_prev_balance)=>{
+      cy.getBalance(to_acc).then((to_acc_prev_balance)=>{
+        cy.get('[type="submit"]').click()
+        cy.contains('Transfer Complete!')
+        cy.getBalance(from_acc).then((from_acc_new_balance)=>{
+          expect(from_acc_new_balance).to.eq(from_acc_prev_balance - 8)
+        })
+        cy.getBalance(to_acc).then((to_acc_new_balance)=>{
+          console.log(to_acc_prev_balance)
+          console.log(to_acc_new_balance)
+          console.log(to_acc_prev_balance + 8)
+          expect(to_acc_new_balance).to.eq(to_acc_prev_balance + 8)
+        })
+      })
+    })
+    cy.getTransactions(to_acc).then((body)=>{
+      expect(body.[body.length-1].description).to.eq('Funds Transfer Received')
+    })
+    cy.getTransactions(from_acc).then((body)=>{
+      expect(body.[body.length-1].description).to.eq('Funds Transfer Sent')
+    })
   })
 })

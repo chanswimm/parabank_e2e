@@ -40,7 +40,26 @@ describe('User Login', () =>{
     cy.get('input[name=password]').type(password)
     cy.get('[type="submit"]').click()
     cy.url().should('include','/overview.htm')
-    cy.visit('/logout.htm')
+    cy.request({
+      method:'GET',
+      url:'/services/bank/login/'+username+'/'+password,
+      headers:{
+        accept:"application/json"
+      }
+    }).then((response)=>{
+      expect(response.status).to.eq(200)
+      cy.request({
+        method:'GET',
+        url:'/services/bank/customers/' + response.body.id,
+        headers:{
+          accept:"application/json"
+        }
+      }).then((customer_info)=>{
+        expect(customer_info.body.firstName).to.eq(response.body.firstName)
+        expect(customer_info.body.lastName).to.eq(response.body.lastName)
+        expect(customer_info.body.ssn).to.eq(response.body.ssn)
+      })
+    })
   })
 
 })

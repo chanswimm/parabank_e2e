@@ -1,5 +1,5 @@
-var username = 'beans_test'
-var password = '123'
+var username = 'q'
+var password = 'q'
 
 Cypress.Commands.add('login', () =>{
   cy.visit('/index.htm')
@@ -74,4 +74,34 @@ Cypress.Commands.add('getTransactionId',()=>{
 Cypress.Commands.add('getLoginInformation',()=>{
   var user=[username,password]
   return(user)
+})
+
+Cypress.Commands.add('getBalance',(account_id)=>{
+  cy.getAccountInfo(account_id).then((body)=>{
+    return(body.balance)
+  })
+})
+
+Cypress.Commands.add('getAccountInfo',(account_id)=>{
+  cy.request({
+    method:'GET',
+    url:'/services/bank/accounts/'+account_id,
+    headers:{
+      accept:"application/json"
+    }
+  }).then(response=>{
+    return(response.body)
+  })
+})
+
+Cypress.Commands.add('getTransactions',(account_id)=>{
+  cy.request({
+    method:'GET',
+    url:'/services/bank/accounts/'+account_id+'/transactions',
+    headers:{
+      accept:"application/json"
+    }
+  }).then((response)=>{
+    return(response.body)
+  })
 })

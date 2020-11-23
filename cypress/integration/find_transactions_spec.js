@@ -8,18 +8,17 @@ describe('Find Transactions By Amount', () => {
   date = mm + '-' + dd + '-' + yyyy
   const from_date = mm + '-' + (dd-5) + '-' + yyyy
   console.log(from_date)
-  const amount = '100'
+  const amount = 100
   beforeEach(() =>{
     cy.login()
     cy.visit('/findtrans.htm')
     cy.getSingleAccount().then((account)=>{
-      account_id = JSON.stringify(account)
-      cy.get('#accountId').select(account_id)
+      account_id = account
+      cy.get('#accountId').select(JSON.stringify(account_id))
     })
     cy.getTransactionId().then((transaction)=>{
-      transaction_id = JSON.stringify(transaction)
+      transaction_id = transaction
     })
-
   })
 
   it('Missing or invalid information', () =>{
@@ -27,11 +26,22 @@ describe('Find Transactions By Amount', () => {
   })
 
   it('Find Transactions by ID', () =>{
-    cy.get('input[ng-model="criteria\.transactionId"]').type(transaction_id)
+    cy.get('input[ng-model="criteria\.transactionId"]').type(JSON.stringify(transaction_id))
     cy.get(':nth-child(5) > .button').click()
     cy.get(':nth-child(2) > .ng-binding').then(($transaction)=>{
       const transaction_description = $transaction.text()
-      cy.request('GET', '/services/bank/transactions/' + transaction_id).its('body').should('include', transaction_description)
+      cy.request({
+        method:'GET',
+        url:'/services/bank/transactions/' + transaction_id,
+        headers:{
+          accept:"application/json"
+        }
+      }).then((response)=>{
+        expect(response.status).to.eq(200)
+        expect(response.body.description).to.eq(transaction_description)
+        expect(response.body.accountId).to.eq(account_id)
+        expect(response.body.id).to.eq(transaction_id)
+      })
     })
   })
 
@@ -46,6 +56,7 @@ describe('Find Transactions By Amount', () => {
         accept:"application/json"
       }
     }).then(response =>{
+      expect(response.status).to.eq(200)
       for(var i = 0; i < response.body.length; i++){
         cy.contains(response.body.[i].description)
       }
@@ -63,6 +74,7 @@ describe('Find Transactions By Amount', () => {
         accept:"application/json"
       }
     }).then(response=>{
+      expect(response.status).to.eq(200)
       for(var i = 0; i < response.body.length; i++){
         cy.contains(response.body.[i].description)
       }
@@ -79,7 +91,10 @@ describe('Find Transactions By Amount', () => {
         accept:"application/json"
       }
     }).then(response=>{
+      expect(response.status).to.eq(200)
       for(var i = 0; i < response.body.length; i++){
+        expect(response.body.[i].amount).to.eq(amount)
+        expect(response.body.[i].accountId).to.eq(account_id)
         cy.contains(response.body.[i].description)
       }
     })

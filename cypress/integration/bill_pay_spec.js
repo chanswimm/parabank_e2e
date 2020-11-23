@@ -1,6 +1,7 @@
 describe('Bill payment service', () =>{
   let from_acc
   const payee_name = 'payee 1'
+  const amount = 12
   beforeEach(()=>{
     cy.login()
     cy.visit('/billpay.htm')
@@ -12,7 +13,7 @@ describe('Bill payment service', () =>{
     cy.get('[name="payee\.phoneNumber"]').focus().type('5450009999')
     cy.get('[name="payee\.accountNumber"]').focus().type('12345')
     cy.get('[name="verifyAccount"]').focus().type('12345')
-    cy.get('[name="amount"]').focus().type('12.32')
+    cy.get('[name="amount"]').focus().type(amount)
     cy.getSingleAccount().then((account_id)=>{
       from_acc = JSON.stringify(account_id)
       cy.get('[name="fromAccountId"]').select(from_acc)
@@ -47,9 +48,19 @@ describe('Bill payment service', () =>{
   })
 
   it('Bill payment successful', () =>{
-    cy.get('input[type="submit"]').click()
-    cy.contains('Bill Payment Complete')
-    cy.request('GET','/services/bank/accounts/'+ from_acc + '/transactions').its('body').should('include','Bill Payment to ' + payee_name)
-  })
+    cy.getBalance(from_acc).then((prev_balance)=>{
+      cy.get('input[type="submit"]').click()
+      cy.contains('Bill Payment Complete')
 
+      cy.getTransactions(from_acc).then((body)=>{
+        expect(body.[body.length-1].description).to.eq('Bill Payment to ' + payee_name)
+      })
+
+      var new_balance = prev_balance-amount
+      console.log(new_balance)
+      cy.getBalance(from_acc).then((balance)=>{
+        expect(balance).to.eq(new_balance)
+      })
+    })
+  })
 })

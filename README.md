@@ -1,9 +1,10 @@
 # Parabank end-to-end test
 ### Requirement
-Test cases are located in cypress/integration folder
+Test cases are located in `cypress/integration folder`
 
 ### Test account
-Login information is located in cypress/support/commands.js
+Login information is located in `cypress/support/commands.js`
+
 Default credentials:
 * username: beans_test
 * password: 123

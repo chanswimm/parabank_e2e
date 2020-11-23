@@ -1,6 +1,9 @@
 # Parabank end-to-end test
 ### Requirement
 Test cases are located in `cypress/integration folder`
+Helper functions are located in `cypress/support/commands.js`
+Database is initialized at each run (Configured in `cypress/support/index.js`)
+Username and password are generated randomly
 
 ### Execution
 1. Start cypress by running `./node_modules/.bin/cypress open`

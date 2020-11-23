@@ -4,6 +4,7 @@ describe('Transfer Funds', () =>{
   const amount = 8
   beforeEach(()=>{
     cy.login()
+    cy.createAccount('CHECKING')
     cy.visit('/transfer.htm')
     cy.getTwoAccounts().then((accounts)=>{
       to_acc = JSON.stringify(accounts[0])
@@ -53,13 +54,10 @@ describe('Transfer Funds', () =>{
         cy.get('[type="submit"]').click()
         cy.contains('Transfer Complete!')
         cy.getBalance(from_acc).then((from_acc_new_balance)=>{
-          expect(from_acc_new_balance).to.eq(from_acc_prev_balance - 8)
+          expect(from_acc_new_balance).to.eq(from_acc_prev_balance - amount)
         })
         cy.getBalance(to_acc).then((to_acc_new_balance)=>{
-          console.log(to_acc_prev_balance)
-          console.log(to_acc_new_balance)
-          console.log(to_acc_prev_balance + 8)
-          expect(to_acc_new_balance).to.eq(to_acc_prev_balance + 8)
+          expect(to_acc_new_balance).to.eq(to_acc_prev_balance + amount)
         })
       })
     })

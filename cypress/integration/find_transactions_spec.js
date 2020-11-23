@@ -7,10 +7,10 @@ describe('Find Transactions By Amount', () => {
   var yyyy = date.getFullYear()
   date = mm + '-' + dd + '-' + yyyy
   const from_date = mm + '-' + (dd-5) + '-' + yyyy
-  console.log(from_date)
   const amount = 100
   beforeEach(() =>{
     cy.login()
+    cy.createAccount('SAVINGS')
     cy.visit('/findtrans.htm')
     cy.getSingleAccount().then((account)=>{
       account_id = account
@@ -30,17 +30,10 @@ describe('Find Transactions By Amount', () => {
     cy.get(':nth-child(5) > .button').click()
     cy.get(':nth-child(2) > .ng-binding').then(($transaction)=>{
       const transaction_description = $transaction.text()
-      cy.request({
-        method:'GET',
-        url:'/services/bank/transactions/' + transaction_id,
-        headers:{
-          accept:"application/json"
-        }
-      }).then((response)=>{
-        expect(response.status).to.eq(200)
-        expect(response.body.description).to.eq(transaction_description)
-        expect(response.body.accountId).to.eq(account_id)
-        expect(response.body.id).to.eq(transaction_id)
+      cy.getTransactionsById(transaction_id).then((body)=>{
+        expect(body.description).to.eq(transaction_description)
+        expect(body.accountId).to.eq(account_id)
+        expect(body.id).to.eq(transaction_id)
       })
     })
   })
@@ -49,16 +42,9 @@ describe('Find Transactions By Amount', () => {
     cy.get('input[ng-model="criteria\.onDate"]').type(date)
     cy.get(':nth-child(9) > .button').click()
 
-    cy.request({
-      method:'GET',
-      url:'/services/bank/accounts/'+account_id+'/transactions/onDate/'+date,
-      headers:{
-        accept:"application/json"
-      }
-    }).then(response =>{
-      expect(response.status).to.eq(200)
-      for(var i = 0; i < response.body.length; i++){
-        cy.contains(response.body.[i].description)
+    cy.getTransactionsByDate(account_id, date).then(body =>{
+      for(var i = 0; i < body.length; i++){
+        cy.contains(body.[i].description)
       }
     })
   })
@@ -67,16 +53,10 @@ describe('Find Transactions By Amount', () => {
     cy.get('input[ng-model="criteria\.fromDate"]').type(from_date)
     cy.get('input[ng-model="criteria\.toDate"]').type(date)
     cy.get(':nth-child(13) > .button').click()
-    cy.request({
-      method:'GET',
-      url:'/services/bank/accounts/'+account_id+'/transactions/fromDate/'+from_date+'/toDate/'+date,
-      headers:{
-        accept:"application/json"
-      }
-    }).then(response=>{
-      expect(response.status).to.eq(200)
-      for(var i = 0; i < response.body.length; i++){
-        cy.contains(response.body.[i].description)
+    cy.getTransactionsByDateRange(account_id,from_date,date).then(body=>{
+      for(var i = 0; i < body.length; i++){
+        expect(body.[i].accountId).to.eq(account_id)
+        cy.contains(body.[i].description)
       }
     })
   })
@@ -84,18 +64,11 @@ describe('Find Transactions By Amount', () => {
   it('Find Transactions by Amount', () =>{
     cy.get('input[ng-model="criteria\.amount"]').type(amount)
     cy.get(':nth-child(17) > .button').click()
-    cy.request({
-      method:'GET',
-      url:'/services/bank/accounts/'+account_id+'/transactions/amount/'+amount,
-      headers:{
-        accept:"application/json"
-      }
-    }).then(response=>{
-      expect(response.status).to.eq(200)
-      for(var i = 0; i < response.body.length; i++){
-        expect(response.body.[i].amount).to.eq(amount)
-        expect(response.body.[i].accountId).to.eq(account_id)
-        cy.contains(response.body.[i].description)
+    cy.getTransactionsByAmount(account_id,amount).then(body=>{
+      for(var i = 0; i < body.length; i++){
+        expect(body.[i].amount).to.eq(amount)
+        expect(body.[i].accountId).to.eq(account_id)
+        cy.contains(body.[i].description)
       }
     })
   })

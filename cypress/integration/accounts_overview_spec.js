@@ -16,32 +16,18 @@ describe('Accounts Overview', () =>{
   })
 
   it('Balance amount is correct', () =>{
-    cy.request({
-      method:'GET',
-      url:'/services/bank/customers/'+customer_id+'/accounts',
-      headers:{
-        accept:"application/json"
-      }
-    }).then(response=>{
-      var balance = 0
-      for(var i=0; i < response.body.length; i++){
-        balance+=response.body[i].balance;
-      }
+    cy.getTotalBalance().then((balance)=>{
       balance=formatter.format(balance)
       cy.contains(balance)
+      cy.createAccount('SAVINGS')
+      cy.createAccount('CHECKING')
     })
   })
 
   it('List of accounts is correct', () =>{
-    cy.request({
-      method:'GET',
-      url:'/services/bank/customers/'+customer_id+'/accounts',
-      headers:{
-        accept:"application/json"
-      }
-    }).then(response=>{
-      for(var i = 0; i<response.body.length;i++){
-        cy.contains(response.body[i].id)
+    cy.getAccountIdList().then(list=>{
+      for(var i = 0; i< list.length;i++){
+        cy.contains(list[i])
       }
     })
   })
@@ -51,27 +37,15 @@ describe('Accounts Overview', () =>{
       console.log(account_id)
       cy.contains(account_id)
       cy.get(':nth-child(1) > :nth-child(1) > .ng-binding').click()
-      cy.request({
-        method:'GET',
-        url:'services/bank/accounts/'+account_id+'/transactions',
-        headers:{
-          accept:"application/json"
-        }
-      }).then(response=>{
-        for(var i=0; i<response.body.length; i++){
-          cy.contains(response.body.[i].description)
+      cy.getTransactions(account_id).then((body)=>{
+        for(var i=0; i<body.length; i++){
+          cy.contains(body.[i].description)
         }
       })
-      cy.request({
-        method:'GET',
-        url:'services/bank/accounts/'+account_id,
-        headers:{
-          accept:"application/json"
-        }
-      }).then(response=>{
-        cy.contains(response.body.id)
-        cy.contains(formatter.format(response.body.balance))
-        cy.contains(response.body.type)
+      cy.getAccountInfo(account_id).then((body)=>{
+        cy.contains(body.id)
+        cy.contains(formatter.format(body.balance))
+        cy.contains(body.type)
       })
     })
   })

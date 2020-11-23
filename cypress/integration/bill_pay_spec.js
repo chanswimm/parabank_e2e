@@ -57,7 +57,6 @@ describe('Bill payment service', () =>{
       })
 
       var new_balance = prev_balance-amount
-      console.log(new_balance)
       cy.getBalance(from_acc).then((balance)=>{
         expect(balance).to.eq(new_balance)
       })

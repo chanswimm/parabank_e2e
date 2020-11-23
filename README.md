@@ -2,9 +2,15 @@
 ### Requirement
 Test cases are located in cypress/integration folder
 
-### Login Information
+### Test account
+Login information is located in cypress/support/commands.js
+Default credentials:
 * username: beans_test
 * password: 123
+
+### Execution
+1. Start cypress by running `./node_modules/.bin/cypress open`
+2. Click `> Run 8 integration specs` on the top right corner
 
 ### Functionality covered:
 * User Registration

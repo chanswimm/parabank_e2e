@@ -48,16 +48,16 @@ describe('User Login', () =>{
       }
     }).then((response)=>{
       expect(response.status).to.eq(200)
-      cy.request({
-        method:'GET',
-        url:'/services/bank/customers/' + response.body.id,
-        headers:{
-          accept:"application/json"
-        }
-      }).then((customer_info)=>{
-        expect(customer_info.body.firstName).to.eq(response.body.firstName)
-        expect(customer_info.body.lastName).to.eq(response.body.lastName)
-        expect(customer_info.body.ssn).to.eq(response.body.ssn)
+      cy.getCustomerDetails().then((customer_info)=>{
+        expect(customer_info.id).to.equal(response.body.id)
+        expect(customer_info.firstName).to.eq(response.body.firstName)
+        expect(customer_info.lastName).to.eq(response.body.lastName)
+        expect(customer_info.address.street).to.eq(response.body.address.street)
+        expect(customer_info.address.city).to.eq(response.body.address.city)
+        expect(customer_info.address.state).to.eq(response.body.address.state)
+        expect(customer_info.address.zipCode).to.eq(response.body.address.zipCode)
+        expect(customer_info.phoneNumber).to.eq(response.body.phoneNumber)
+        expect(customer_info.ssn).to.eq(response.body.ssn)
       })
     })
   })

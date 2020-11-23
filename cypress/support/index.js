@@ -2,5 +2,7 @@ import './commands'
 
 before(()=>{
   cy.cleanDB()
-  cy.initalizeDB()
+  cy.initializeDB()
+  cy.registerCustomer()
+  cy.logout()
 })

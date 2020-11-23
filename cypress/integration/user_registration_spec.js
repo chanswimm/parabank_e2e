@@ -32,6 +32,8 @@ describe('The Register Page', () => {
   })
 
   it('Account registered successfully', () =>{
+    cy.cleanDB()
+    cy.initializeDB()
     cy.getLoginInformation().then((user)=>{
       username=user[0]
       password=user[1]
@@ -42,31 +44,17 @@ describe('The Register Page', () => {
     cy.get('[colspan="2"] > .button').click()
     cy.contains('Your account was created successfully. You are now logged in')
     cy.get('.title').should('contain',username)
-    cy.request({
-      method:'GET',
-      url:'/services/bank/login/'+username+'/'+password,
-      headers:{
-        accept:"application/json"
-      }
-    }).then((response)=>{
-      cy.request({
-        method:'GET',
-        url:'/services/bank/customers/'+response.body.id,
-        headers:{
-          accept:"application/json"
-        }
-      }).then((customer_info)=>{
-        expect(customer_info.body.firstName).to.eq(first_name)
-        expect(customer_info.body.lastName).to.eq(last_name)
-        expect(customer_info.body.address.street).to.eq(address_street)
-        expect(customer_info.body.address.city).to.eq(address_city)
-        expect(customer_info.body.address.state).to.eq(address_state)
-        expect(customer_info.body.address.zipCode).to.eq(address_zip_code)
-        expect(customer_info.body.phoneNumber).to.eq(phone_number)
-        expect(customer_info.body.ssn).to.eq(ssn)
+    cy.getCustomerDetails().then((customer_info)=>{
+        expect(customer_info.firstName).to.eq(first_name)
+        expect(customer_info.lastName).to.eq(last_name)
+        expect(customer_info.address.street).to.eq(address_street)
+        expect(customer_info.address.city).to.eq(address_city)
+        expect(customer_info.address.state).to.eq(address_state)
+        expect(customer_info.address.zipCode).to.eq(address_zip_code)
+        expect(customer_info.phoneNumber).to.eq(phone_number)
+        expect(customer_info.ssn).to.eq(ssn)
       })
     })
-  })
   })
 
   it('Username taken', () => {

@@ -54,17 +54,7 @@ describe('Open new account', () =>{
   it('New Balance is correct', ()=>{
     cy.getCustomerId().then((customer_id)=>{
       cy.visit('/overview.htm')
-      cy.request({
-        method:'GET',
-        url:'/services/bank/customers/'+customer_id+'/accounts',
-        headers:{
-          accept:"application/json"
-        }
-      }).then(response=>{
-        var balance = 0
-        for(var i=0; i < response.body.length; i++){
-          balance+=response.body[i].balance;
-        }
+      cy.getTotalBalance().then(balance=>{
         balance=formatter.format(balance)
         cy.contains(balance)
       })

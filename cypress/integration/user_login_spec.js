@@ -1,17 +1,28 @@
 describe('User Login', () =>{
-  it('Login as test user', () =>{
-    cy.visit('/index.htm')
-    cy.get('input[name=username]').type('q')
-    cy.get('input[name=password]').type('q')
-    cy.get('[type="submit"]').click()
-    cy.url().should('include','/overview.htm')
-    cy.get('#leftPanel > ul > :nth-child(8) > a').click()
+  let username
+  let password
+  before(()=>{
+    cy.getLoginInformation().then((user)=>{
+      username = user[0]
+      password = user[1]
+    })
   })
 
   it('Login with invalid credentials', () =>{
     cy.visit('/index.htm')
+    cy.request({
+      method:'GET',
+      url:'/services/bank/login/invalid/invalid',
+      failOnStatusCode:false,
+      headers:{
+        accept:"application/json"
+      }
+    }).then((response)=>{
+      expect(response.body).to.eq('Invalid username and/or password')
+    })
+
     cy.get('input[name=username]').type('invalid')
-    cy.get('input[name=password]').type(password)
+    cy.get('input[name=password]').type('invalid')
     cy.get('[type="submit"]').click()
     cy.contains('The username and password could not be verified.')
   })
@@ -21,6 +32,15 @@ describe('User Login', () =>{
     cy.get('input[name=password]').type(password)
     cy.get('[type="submit"]').click()
     cy.contains('Please enter a username and password.')
+  })
+
+  it('Login as test user', () =>{
+    cy.visit('/index.htm')
+    cy.get('input[name=username]').type(username)
+    cy.get('input[name=password]').type(password)
+    cy.get('[type="submit"]').click()
+    cy.url().should('include','/overview.htm')
+    cy.visit('/logout.htm')
   })
 
 })

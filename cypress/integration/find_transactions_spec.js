@@ -1,9 +1,13 @@
 describe('Find Transactions By Amount', () => {
   let account_id
   let transaction_id
-  const date = '11-20-2020'
-  const from_date = '11-18-2020'
-  const to_date = '11-21-2020'
+  var date = new Date();
+  var dd = String(date.getDate()).padStart(2, '0')
+  var mm = String(date.getMonth() + 1).padStart(2, '0')
+  var yyyy = date.getFullYear()
+  date = mm + '-' + dd + '-' + yyyy
+  const from_date = mm + '-' + (dd-5) + '-' + yyyy
+  console.log(from_date)
   const amount = '100'
   beforeEach(() =>{
     cy.login()
@@ -50,11 +54,11 @@ describe('Find Transactions By Amount', () => {
 
   it('Find Transactions by Date Range', () =>{
     cy.get('input[ng-model="criteria\.fromDate"]').type(from_date)
-    cy.get('input[ng-model="criteria\.toDate"]').type(to_date)
+    cy.get('input[ng-model="criteria\.toDate"]').type(date)
     cy.get(':nth-child(13) > .button').click()
     cy.request({
       method:'GET',
-      url:'/services/bank/accounts/'+account_id+'/transactions/fromDate/'+from_date+'/toDate/'+to_date,
+      url:'/services/bank/accounts/'+account_id+'/transactions/fromDate/'+from_date+'/toDate/'+date,
       headers:{
         accept:"application/json"
       }

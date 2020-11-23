@@ -1,5 +1,5 @@
-var username='a'
-var password='a'
+var username = 'q'
+var password = 'q'
 
 Cypress.Commands.add('login', () =>{
   cy.visit('/index.htm')
@@ -69,4 +69,9 @@ Cypress.Commands.add('getTransactionId',()=>{
       return(response.body[0].id)
     })
   })
+})
+
+Cypress.Commands.add('getLoginInformation',()=>{
+  var user=[username,password]
+  return(user)
 })

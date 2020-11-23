@@ -1,6 +1,8 @@
 describe('The Register Page', () => {
+  var username = Math.random().toString(36).substr(2, 9)
+  var password = Math.random().toString(36).substr(2, 9)
+
   beforeEach(()=>{
-    cy.visit('/register.htm')
     cy.visit('/register.htm')
     cy.get('[name="customer\.firstName"]').focus().type('First')
     cy.get('[name="customer\.lastName"]').focus().type('Last')
@@ -16,8 +18,11 @@ describe('The Register Page', () => {
   })
 
   it('Username taken', () => {
-    cy.get('[colspan="2"] > .button').click()
-    cy.contains('This username already exists.')
+    cy.getLoginInformation().then((user)=>{
+      cy.get('[name="customer\.username"]').focus().clear().type(user[1])
+      cy.get('[colspan="2"] > .button').click()
+      cy.contains('This username already exists.')
+    })
   })
 
   it('Missing some required fields', () =>{
@@ -28,9 +33,11 @@ describe('The Register Page', () => {
   })
 
   it('Account registered successfully', () =>{
-    cy.get('[name="customer\.username"]').focus().clear().type('test_user_5')
+    cy.get('[name="customer\.username"]').focus().clear().type(username)
+    cy.get('[name="customer\.password"]').focus().type(password)
+    cy.get('[name="repeatedPassword"]').focus().type(password)
     cy.get('[colspan="2"] > .button').click()
     cy.contains('Your account was created successfully. You are now logged in')
-    cy.get('.title').should('contain','test_user_5')
+    cy.get('.title').should('contain',username)
   })
 })

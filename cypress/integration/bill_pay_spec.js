@@ -1,6 +1,6 @@
 describe('Bill payment service', () =>{
+  let from_acc
   const payee_name = 'payee 1'
-  const from_acc = '15231'
   beforeEach(()=>{
     cy.login()
     cy.visit('/billpay.htm')
@@ -13,7 +13,10 @@ describe('Bill payment service', () =>{
     cy.get('[name="payee\.accountNumber"]').focus().type('12345')
     cy.get('[name="verifyAccount"]').focus().type('12345')
     cy.get('[name="amount"]').focus().type('12.32')
-    cy.get('[name="fromAccountId"]').select(from_acc)
+    cy.getSingleAccount().then((account_id)=>{
+      from_acc = JSON.stringify(account_id)
+      cy.get('[name="fromAccountId"]').select(from_acc)
+    })
   })
 
   it('Missing Payee infomration', () =>{

@@ -1,3 +1,13 @@
 {
-  "baseUrl": "http://35.227.171.220/parabank/"
+  "baseUrl": "http://35.227.171.220/parabank/",
+  "testFiles":[
+    "register_spec.js",
+    "user_login_spec.js",
+    "open_new_account_spec.js",
+    "accounts_overview_spec.js",
+    "transfer_fund_spec.js",
+    "bill_pay_spec.js",
+    "find_transactions_spec.js",
+    "logout_spec.js"
+  ]
 }

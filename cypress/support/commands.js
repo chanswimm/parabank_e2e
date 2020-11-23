@@ -1,5 +1,5 @@
-var username = 'q'
-var password = 'q'
+var username = Math.random().toString(36).substr(2, 9)
+var password = Math.random().toString(36).substr(2, 9)
 
 Cypress.Commands.add('login', () =>{
   cy.visit('/index.htm')
@@ -103,5 +103,29 @@ Cypress.Commands.add('getTransactions',(account_id)=>{
     }
   }).then((response)=>{
     return(response.body)
+  })
+})
+
+Cypress.Commands.add('cleanDB',()=>{
+  cy.request({
+    method:'POST',
+    url:'/services/bank/cleanDB',
+    headers:{
+      accept:"application/json"
+    }
+  }).then((response)=>{
+    expect(response.status).to.eq(204)
+  })
+})
+
+Cypress.Commands.add('initalizeDB',()=>{
+  cy.request({
+    method:'POST',
+    url:'/services/bank/initializeDB',
+    headers:{
+      accept:"application/json"
+    }
+  }).then((response)=>{
+    expect(response.status).to.eq(204)
   })
 })

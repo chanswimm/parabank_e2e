@@ -1,0 +1,23 @@
+{
+  "name": "parabank_e2e",
+  "version": "1.0.0",
+  "description": "parabank end to end testing",
+  "main": "index.js",
+  "dependencies": {
+    "cypress": "^5.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chanswimm/parabank_e2e.git"
+  },
+  "author": "Swimm Chan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chanswimm/parabank_e2e/issues"
+  },
+  "homepage": "https://github.com/chanswimm/parabank_e2e#readme"
+}

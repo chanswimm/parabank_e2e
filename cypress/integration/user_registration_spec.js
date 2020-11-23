@@ -1,6 +1,6 @@
 describe('The Register Page', () => {
-  var username = Math.random().toString(36).substr(2, 9)
-  var password = Math.random().toString(36).substr(2, 9)
+  let username
+  let password
   const first_name = 'John'
   const last_name = 'Doe'
   const address_street = '3567 Hanapepe Road'
@@ -25,14 +25,6 @@ describe('The Register Page', () => {
     cy.get('[name="repeatedPassword"]').focus().type('Testing123')
   })
 
-  it('Username taken', () => {
-    cy.getLoginInformation().then((user)=>{
-      cy.get('[name="customer\.username"]').focus().clear().type(user[1])
-      cy.get('[colspan="2"] > .button').click()
-      cy.contains('This username already exists.')
-    })
-  })
-
   it('Missing some required fields', () =>{
     cy.get('[name="customer\.address\.zipCode"]').focus().clear()
     cy.get('input[value="Register"]').click()
@@ -40,6 +32,10 @@ describe('The Register Page', () => {
   })
 
   it('Account registered successfully', () =>{
+    cy.getLoginInformation().then((user)=>{
+      username=user[0]
+      password=user[1]
+
     cy.get('[name="customer\.username"]').focus().clear().type(username)
     cy.get('[name="customer\.password"]').focus().clear().type(password)
     cy.get('[name="repeatedPassword"]').focus().clear().type(password)
@@ -69,6 +65,15 @@ describe('The Register Page', () => {
         expect(customer_info.body.phoneNumber).to.eq(phone_number)
         expect(customer_info.body.ssn).to.eq(ssn)
       })
+    })
+  })
+  })
+
+  it('Username taken', () => {
+    cy.getLoginInformation().then((user)=>{
+      cy.get('[name="customer\.username"]').focus().clear().type(user[0])
+      cy.get('[colspan="2"] > .button').click()
+      cy.contains('This username already exists.')
     })
   })
 })

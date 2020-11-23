@@ -1,7 +1,7 @@
 {
   "baseUrl": "http://35.227.171.220/parabank/",
   "testFiles":[
-    "register_spec.js",
+    "user_registration_spec.js",
     "user_login_spec.js",
     "open_new_account_spec.js",
     "accounts_overview_spec.js",

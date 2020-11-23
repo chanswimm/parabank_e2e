@@ -1,5 +1,5 @@
-var username = 'q'
-var password = 'q'
+var username = 'beans_test'
+var password = '123'
 
 Cypress.Commands.add('login', () =>{
   cy.visit('/index.htm')

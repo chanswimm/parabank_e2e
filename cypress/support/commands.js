@@ -272,12 +272,7 @@ Cypress.Commands.add('getAccountIdList',()=>{
         accept:"application/json"
       }
     }).then(response=>{
-      var list = []
-      for(var i = 0; i<response.body.length;i++){
-        list[i]=response.body[i].id
-        console.log(list[i])
-      }
-      return list
+      return(response.body)
     })
   })
 })

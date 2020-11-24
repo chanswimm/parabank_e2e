@@ -25,14 +25,7 @@ describe('Accounts Overview', () =>{
   it('Only one account is opened after initial user registration', () =>{
     cy.getAccountIdList().then(body=>{
       expect(body.length).to.eq(1)
-      cy.get('tbody').find('tr').should('have.length',body.length+1)
-    })
-    cy.createAccount('SAVINGS')
-    cy.createAccount('CHECKING')
-  })
-
-  it('List of accounts is correct', () =>{
-    cy.getAccountIdList().then(body=>{
+      // length is +1 because it includes 'Total'
       cy.get('tbody').find('tr').should('have.length',body.length+1)
     })
   })

@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://35.227.171.220/parabank/",
+  "baseUrl": "https://parabank.parasoft.com/parabank/",
   "testFiles":[
     "user_registration_spec.js",
     "user_login_spec.js",
